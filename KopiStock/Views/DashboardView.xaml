@@ -1,0 +1,282 @@
+<UserControl x:Class="KopiStock.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel>
+
+        <!-- HEADER -->
+        <Grid Margin="0,0,0,23">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Text="Ringkasan gudang"
+                           Style="{StaticResource H1}"/>
+
+                <TextBlock Text="Selamat datang, Admin. Berikut posisi persediaan kopi saat ini."
+                           Style="{StaticResource MutedText}"
+                           FontSize="13"/>
+            </StackPanel>
+
+            <Button Grid.Column="1"
+                    Content="＋  Penerimaan baru"
+                    Style="{StaticResource PrimaryButton}"
+                    VerticalAlignment="Center"
+                    Click="Receiving_Click"/>
+        </Grid>
+
+        <!-- KARTU STATISTIK -->
+        <UniformGrid Columns="4" Margin="0,0,0,22">
+
+            <Border Style="{StaticResource DarkCard}"
+                    Margin="0,0,10,0"
+                    MinHeight="155">
+
+                <StackPanel>
+                    <TextBlock Text="Total stok tersedia"
+                               Foreground="#D7C8BE"
+                               FontSize="12"/>
+
+                    <TextBlock x:Name="TotalStock"
+                               Text="0 kg"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Margin="0,16,0,7"/>
+
+                    <TextBlock Text="Saldo terkini di Gudang Utama"
+                               Foreground="#C8B7AB"
+                               FontSize="11"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}"
+                    Margin="5,0,5,0"
+                    MinHeight="155">
+
+                <StackPanel>
+                    <TextBlock Text="Lot aktif"
+                               Style="{StaticResource MutedText}"/>
+
+                    <TextBlock x:Name="ActiveLots"
+                               Text="0 lot"
+                               Style="{StaticResource KpiNumber}"/>
+
+                    <TextBlock Text="Lot dengan saldo lebih dari 0 kg"
+                               Style="{StaticResource MutedText}"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}"
+                    Margin="5,0,5,0"
+                    MinHeight="155">
+
+                <StackPanel>
+                    <TextBlock Text="Penerimaan tercatat"
+                               Style="{StaticResource MutedText}"/>
+
+                    <TextBlock x:Name="TotalIn"
+                               Text="0 kg"
+                               Style="{StaticResource KpiNumber}"/>
+
+                    <TextBlock x:Name="CountIn"
+                               Text="IN · 0 transaksi"
+                               Style="{StaticResource MutedText}"/>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource Card}"
+                    Margin="10,0,0,0"
+                    MinHeight="155">
+
+                <StackPanel>
+                    <TextBlock Text="Pengeluaran tercatat"
+                               Style="{StaticResource MutedText}"/>
+
+                    <TextBlock x:Name="TotalOut"
+                               Text="0 kg"
+                               Style="{StaticResource KpiNumber}"/>
+
+                    <TextBlock x:Name="CountOut"
+                               Text="OUT · 0 transaksi"
+                               Style="{StaticResource MutedText}"/>
+                </StackPanel>
+            </Border>
+
+        </UniformGrid>
+
+        <!-- AKTIVITAS TERAKHIR -->
+        <Border Style="{StaticResource Card}"
+                Padding="0"
+                Margin="0,0,0,22">
+
+            <StackPanel>
+
+                <Grid Margin="20,19,20,13">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <TextBlock Text="Aktivitas terakhir"
+                                   Style="{StaticResource Subheading}"/>
+
+                        <TextBlock Text="Pergerakan stok terbaru dari database"
+                                   Style="{StaticResource MutedText}"
+                                   Margin="0,4,0,0"/>
+                    </StackPanel>
+
+                    <Button Grid.Column="1"
+                            Content="Lihat riwayat →"
+                            Style="{StaticResource LinkButton}"
+                            VerticalAlignment="Center"
+                            Click="History_Click"/>
+                </Grid>
+
+                <DataGrid x:Name="Recent"
+                          Height="188"
+                          Margin="1,0,1,0">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn
+                            Header="Tanggal &amp; waktu dicatat"
+                            Binding="{Binding RecordedAtLabel}"
+                            Width="1*"/>
+
+                        <DataGridTextColumn
+                            Header="Transaksi"
+                            Binding="{Binding TypeLabel}"
+                            Width="1*"/>
+
+                        <DataGridTextColumn
+                            Header="Kode lot"
+                            Binding="{Binding LotCode}"
+                            Width="1*"/>
+
+                        <DataGridTextColumn
+                            Header="Berat"
+                            Binding="{Binding QuantityLabel}"
+                            Width="1*"/>
+
+                        <DataGridTextColumn
+                            Header="Asal / tujuan"
+                            Binding="{Binding DestinationLabel}"
+                            Width="1.6*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <TextBlock x:Name="Empty"
+                           Text="Belum ada transaksi. Mulai dari Master Data, kemudian lakukan Penerimaan."
+                           Style="{StaticResource MutedText}"
+                           Margin="20,10,20,17"/>
+
+            </StackPanel>
+        </Border>
+
+        <!-- STOK LOT DAN INFORMASI -->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- LOT DALAM PENYIMPANAN -->
+            <Border Style="{StaticResource Card}"
+                    Margin="0,0,12,0"
+                    Padding="0">
+
+                <StackPanel>
+
+                    <Grid Margin="20,18,20,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="Lot dalam penyimpanan"
+                                       Style="{StaticResource Subheading}"/>
+
+                            <TextBlock Text="Lot aktif, asal yang dapat ditelusuri."
+                                       Style="{StaticResource MutedText}"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="1"
+                                Content="Lihat stok →"
+                                Style="{StaticResource LinkButton}"
+                                Click="Stock_Click"/>
+                    </Grid>
+
+                    <DataGrid x:Name="LotPreview"
+                              Height="143">
+
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Header="Lot"
+                                Binding="{Binding Code}"
+                                Width="1*"/>
+
+                            <DataGridTextColumn
+                                Header="Jenis kopi"
+                                Binding="{Binding CoffeeName}"
+                                Width="1.1*"/>
+
+                            <DataGridTextColumn
+                                Header="Asal"
+                                Binding="{Binding Origin}"
+                                Width="1.1*"/>
+
+                            <DataGridTextColumn
+                                Header="Saldo"
+                                Binding="{Binding BalanceLabel}"
+                                Width="1*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <TextBlock x:Name="NoLots"
+                               Text="Belum ada lot yang tersimpan."
+                               Style="{StaticResource MutedText}"
+                               Margin="20,12,0,14"/>
+
+                </StackPanel>
+            </Border>
+
+            <!-- KARTU BEIGE: PERBAIKAN UTAMA -->
+            <Border Grid.Column="1"
+                    Background="{StaticResource SoftLatte}"
+                    CornerRadius="12"
+                    Padding="22"
+                    Margin="12,0,0,0"
+                    Height="160"
+                    VerticalAlignment="Top">
+
+                <StackPanel>
+
+                    <TextBlock Text="☷"
+                               Foreground="{StaticResource Mocha}"
+                               FontSize="22"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Pencatatan yang konsisten."
+                               Foreground="{StaticResource Ink}"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,8"/>
+
+                    <TextBlock Text="Setiap penerimaan membuat satu lot. Pengeluaran selalu mengacu pada saldo lot terbaru."
+                               Foreground="{StaticResource Muted}"
+                               FontSize="12"
+                               TextWrapping="Wrap"
+                               LineHeight="18"/>
+
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+    </StackPanel>
+</UserControl>

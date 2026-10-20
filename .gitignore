@@ -1,0 +1,28 @@
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Build outputs
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+
+# SQLite local database
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.log
+*.bak
+
+# Windows
+Thumbs.db
+Desktop.ini

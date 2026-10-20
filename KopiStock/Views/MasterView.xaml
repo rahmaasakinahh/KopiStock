@@ -1,0 +1,344 @@
+<UserControl x:Class="KopiStock.Views.MasterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <StackPanel>
+        <TextBlock Text="Master data"
+                   Style="{StaticResource H1}"/>
+
+        <TextBlock Text="Kelola jenis kopi dan pemasok. Data yang sudah dipakai lot tetap dapat ditelusuri."
+                   Style="{StaticResource MutedText}"
+                   FontSize="13"
+                   Margin="0,0,0,20"/>
+
+        <TabControl>
+
+            <!-- JENIS KOPI -->
+            <TabItem Header="Jenis Kopi">
+                <Border Style="{StaticResource Card}"
+                        Margin="0,12,0,0"
+                        Padding="0">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.8*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <Grid Margin="20,18,20,13">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock Text="Jenis kopi terdaftar"
+                                               Style="{StaticResource Subheading}"/>
+                                    <TextBlock Text="Status dan asal dari lot yang pernah diterima"
+                                               Style="{StaticResource MutedText}"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <TextBlock Grid.Column="1"
+                                           x:Name="CoffeeCount"
+                                           Style="{StaticResource MutedText}"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <DataGrid x:Name="CoffeeGrid"
+                                      Height="355"
+                                      SelectionChanged="CoffeeGrid_SelectionChanged"
+                                      ToolTip="Jenis kopi bisa memiliki beberapa daerah asal; asal ditelusuri melalui lot penerimaan.">
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Jenis kopi"
+                                                        Binding="{Binding Name}"
+                                                        Width="1*"/>
+
+                                    <DataGridTextColumn Header="Asal dari lot"
+                                                        Binding="{Binding OriginLabel}"
+                                                        Width="1.35*"/>
+
+                                    <DataGridTextColumn Header="Status"
+                                                        Binding="{Binding StatusLabel}"
+                                                        Width=".75*"/>
+
+                                    <DataGridTemplateColumn Header="Aksi"
+                                                            Width="1.65*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="Lihat detail"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource LinkButton}"
+                                                            Click="CoffeeDetails_Click"
+                                                            Padding="5,4"/>
+
+                                                    <Button Content="Ubah"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource LinkButton}"
+                                                            Click="CoffeeEdit_Click"
+                                                            Padding="5,4"
+                                                            Margin="7,0,0,0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <TextBlock Text="Asal merupakan atribut lot penerimaan, bukan nilai tetap satu jenis kopi."
+                                       Style="{StaticResource MutedText}"
+                                       Margin="20,12,20,16"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                BorderBrush="{StaticResource Line}"
+                                BorderThickness="1,0,0,0"
+                                Background="#FBF8F4"
+                                Padding="20">
+
+                            <StackPanel>
+                                <TextBlock Text="Form jenis kopi"
+                                           Style="{StaticResource Subheading}"/>
+
+                                <TextBlock x:Name="CoffeeMessage"
+                                           Text="Mode: tambah data baru"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,5,0,18"/>
+
+                                <TextBlock Text="Nama jenis kopi *"
+                                           Style="{StaticResource FieldLabel}"/>
+
+                                <TextBox x:Name="CoffeeName"
+                                         MaxLength="80"
+                                         Margin="0,0,0,15"/>
+
+                                <TextBlock Text="Status *"
+                                           Style="{StaticResource FieldLabel}"/>
+
+                                <ComboBox x:Name="CoffeeStatus"
+                                          SelectedIndex="0"
+                                          Margin="0,0,0,18">
+                                    <ComboBoxItem Content="Aktif"/>
+                                    <ComboBoxItem Content="Nonaktif"/>
+                                </ComboBox>
+
+                                <WrapPanel>
+                                    <Button Content="Simpan jenis kopi"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Click="SaveCoffee_Click"
+                                            Margin="0,0,8,8"/>
+
+                                    <Button Content="Bersihkan"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="ClearCoffee_Click"
+                                            Margin="0,0,0,8"/>
+                                </WrapPanel>
+
+                                <Border x:Name="CoffeeDetailPanel"
+                                        Visibility="Collapsed"
+                                        Background="{StaticResource SoftLatte}"
+                                        CornerRadius="8"
+                                        Padding="13"
+                                        Margin="0,18,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Detail jenis kopi"
+                                                   Style="{StaticResource FieldLabel}"/>
+
+                                        <TextBlock x:Name="CoffeeDetailName"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"/>
+
+                                        <TextBlock x:Name="CoffeeDetailStatus"
+                                                   Foreground="{StaticResource Mocha}"
+                                                   Margin="0,5,0,0"/>
+
+                                        <TextBlock x:Name="CoffeeDetailOrigins"
+                                                   Margin="0,7,0,0"
+                                                   TextWrapping="Wrap"/>
+
+                                        <TextBlock x:Name="CoffeeDetailLots"
+                                                   Style="{StaticResource MutedText}"
+                                                   Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </TabItem>
+
+            <!-- PEMASOK -->
+            <TabItem Header="Pemasok">
+                <Border Style="{StaticResource Card}"
+                        Margin="0,12,0,0"
+                        Padding="0">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1.8*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <Grid Margin="20,18,20,13">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel>
+                                    <TextBlock Text="Pemasok terdaftar"
+                                               Style="{StaticResource Subheading}"/>
+
+                                    <TextBlock Text="Nama, kontak, status, dan aksi"
+                                               Style="{StaticResource MutedText}"
+                                               Margin="0,4,0,0"/>
+                                </StackPanel>
+
+                                <TextBlock x:Name="SupplierCount"
+                                           Grid.Column="1"
+                                           Style="{StaticResource MutedText}"
+                                           VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <DataGrid x:Name="SupplierGrid"
+                                      Height="355"
+                                      SelectionChanged="SupplierGrid_SelectionChanged">
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Nama pemasok"
+                                                        Binding="{Binding Name}"
+                                                        Width="1.35*"/>
+
+                                    <DataGridTextColumn Header="Kontak"
+                                                        Binding="{Binding ContactLabel}"
+                                                        Width="1.1*"/>
+
+                                    <DataGridTextColumn Header="Status"
+                                                        Binding="{Binding StatusLabel}"
+                                                        Width=".7*"/>
+
+                                    <DataGridTemplateColumn Header="Aksi"
+                                                            Width="1.4*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="Lihat detail"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource LinkButton}"
+                                                            Click="SupplierDetails_Click"
+                                                            Padding="5,4"/>
+
+                                                    <Button Content="Ubah"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource LinkButton}"
+                                                            Click="SupplierEdit_Click"
+                                                            Padding="5,4"
+                                                            Margin="6,0,0,0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+
+                            <TextBlock Text="Menonaktifkan pemasok tidak menghapus histori lot yang sudah ada."
+                                       Style="{StaticResource MutedText}"
+                                       Margin="20,12,20,16"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                BorderBrush="{StaticResource Line}"
+                                BorderThickness="1,0,0,0"
+                                Background="#FBF8F4"
+                                Padding="20">
+
+                            <StackPanel>
+                                <TextBlock Text="Form pemasok"
+                                           Style="{StaticResource Subheading}"/>
+
+                                <TextBlock x:Name="SupplierMessage"
+                                           Text="Mode: tambah data baru"
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,5,0,18"/>
+
+                                <TextBlock Text="Nama pemasok *"
+                                           Style="{StaticResource FieldLabel}"/>
+
+                                <TextBox x:Name="SupplierName"
+                                         MaxLength="100"
+                                         Margin="0,0,0,15"/>
+
+                                <!-- KONTAK PEMASOK WAJIB -->
+                                <TextBlock Text="Kontak pemasok *"
+                                           Style="{StaticResource FieldLabel}"/>
+
+                                <TextBox x:Name="SupplierContact"
+                                         MaxLength="100"
+                                         Margin="0,0,0,5"
+                                         ToolTip="Wajib diisi: nomor telepon atau email pemasok"/>
+
+                                <TextBlock Text="Wajib diisi: nomor telepon atau email pemasok."
+                                           Style="{StaticResource MutedText}"
+                                           Margin="0,0,0,15"/>
+
+                                <TextBlock Text="Status *"
+                                           Style="{StaticResource FieldLabel}"/>
+
+                                <ComboBox x:Name="SupplierStatus"
+                                          SelectedIndex="0"
+                                          Margin="0,0,0,18">
+                                    <ComboBoxItem Content="Aktif"/>
+                                    <ComboBoxItem Content="Nonaktif"/>
+                                </ComboBox>
+
+                                <WrapPanel>
+                                    <Button Content="Simpan pemasok"
+                                            Style="{StaticResource PrimaryButton}"
+                                            Click="SaveSupplier_Click"
+                                            Margin="0,0,8,8"/>
+
+                                    <Button Content="Bersihkan"
+                                            Style="{StaticResource SecondaryButton}"
+                                            Click="ClearSupplier_Click"
+                                            Margin="0,0,0,8"/>
+                                </WrapPanel>
+
+                                <Border x:Name="SupplierDetailPanel"
+                                        Visibility="Collapsed"
+                                        Background="{StaticResource SoftLatte}"
+                                        CornerRadius="8"
+                                        Padding="13"
+                                        Margin="0,18,0,0">
+
+                                    <StackPanel>
+                                        <TextBlock Text="Detail pemasok"
+                                                   Style="{StaticResource FieldLabel}"/>
+
+                                        <TextBlock x:Name="SupplierDetailName"
+                                                   FontSize="15"
+                                                   FontWeight="SemiBold"/>
+
+                                        <TextBlock x:Name="SupplierDetailContact"
+                                                   Margin="0,5,0,0"/>
+
+                                        <TextBlock x:Name="SupplierDetailStatus"
+                                                   Foreground="{StaticResource Mocha}"
+                                                   Margin="0,5,0,0"/>
+
+                                        <TextBlock x:Name="SupplierDetailLots"
+                                                   Style="{StaticResource MutedText}"
+                                                   Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+            </TabItem>
+        </TabControl>
+    </StackPanel>
+</UserControl>
